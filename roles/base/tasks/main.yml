@@ -1,0 +1,69 @@
+- name: enable epel and install selinux dep
+  tags: centos
+  dnf:
+    name:
+      - epel-release
+      - policycoreutils-python-utils
+    state: latest
+  when: ansible_distribution == "CentOS"
+
+- name: install packages
+  tags: ubuntu, debian, centos
+  package:
+    name:
+      - "{{ vim_package_name }}"
+      - "{{ firewall_package_name }}"
+      - htop
+      - fail2ban
+    state: latest
+
+- name: selinux ssh port
+  tags: centos
+  command: semanage port -a -t ssh_port_t -p tcp 2222
+  when: ansible_distribution == "CentOS"
+
+- name: firewalld configuration
+  tags: centos
+  firewalld:
+    port: "2222/tcp"
+    state: "enabled"
+    permanent: true
+    immediate: true
+  when: ansible_distribution == "CentOS"
+
+- name: ssh configuration from template
+  tags: ubuntu, debian, centos
+  template:
+    src: sshd.conf.j2
+    dest: /etc/ssh/sshd_config.d/sshd.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart_sshd
+
+- name: ufw configuration
+  tags: ubuntu, debian
+  ufw:
+    rule: "allow"
+    port: "2222"
+    proto: "tcp"
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: copy jail.local template
+  tags: ubuntu, debian, centos
+  template: 
+    src: "{{ fail2ban_template_file }}"
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: 0644
+  notify: enable_fail2ban
+
+- name: enable ufw
+  tags: ubuntu, debian
+  ufw:
+    policy: "deny"
+    logging: "on"
+  notify: enable_ufw
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+  

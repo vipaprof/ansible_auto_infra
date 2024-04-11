@@ -1,0 +1,16 @@
+- name: restart_sshd
+  service:
+    name: sshd
+    state: restarted
+
+- name: enable_fail2ban
+  service:
+    name: fail2ban
+    enabled: true
+    state: restarted
+
+- name: enable_ufw
+  service:
+    name: ufw
+    enabled: true
+    state: restarted
