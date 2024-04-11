@@ -1,0 +1,4 @@
+vim_package_name: vim
+firewall_package_name: ufw
+ssh_users: "gloat ansible"
+fail2ban_template_file: jail_debian.j2
