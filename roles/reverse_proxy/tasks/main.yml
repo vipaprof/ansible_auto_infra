@@ -1,0 +1,30 @@
+- name: install nginx
+  tags: ubuntu, nginx
+  apt:
+    name: nginx
+    state: latest
+
+- name: copy nginx.conf template
+  tags: ubuntu, nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+
+- name: creating directories for cache
+  tags: nginx
+  file:
+    path: "/tmp/{{ item }}"
+    state: directory
+    mode: 0775
+  with_items:
+    - /nginx
+    - /nginx/cache
+
+- name: firewall settings
+  tags: ubuntu, nginx
+  ufw:
+    rule: "allow"
+    port: "80"
+    proto: "tcp"
+    state: "reloaded"
+  notify: restart_nginx      

@@ -2,3 +2,4 @@ vim_package_name: vim-enhanced
 firewall_package_name: firewalld
 ssh_users: "gloat ansible"
 fail2ban_template_file: jail_centos.j2
+mariadb_root_password_file: /home/gloat/passwords.yml

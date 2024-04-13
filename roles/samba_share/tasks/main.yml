@@ -1,0 +1,82 @@
+- name: install samba
+  tags: samba, centos
+  dnf:
+    name: samba
+    state: latest
+
+- name: stop samba service
+  tags: samba, centos
+  service:
+    name: smb
+    state: stopped
+
+- name: make backup of configuration file
+  tags: samba
+  copy:
+    src: /etc/samba/smb.conf
+    dest: /etc/samba/smb.conf.bak
+    remote_src: yes
+
+- name: copy smb.conf template
+  tags: samba
+  template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy shares.conf template
+  tags: samba
+  template:
+    src: shares.conf.j2
+    dest: /etc/samba/shares.conf
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create parent directory and subdirectories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0775
+  with_items:
+    - /share
+    - /share/public_files
+    - /share/private_files
+
+- name: Create system group smbgroup
+  group:
+    name: smbgroup
+    state: present
+    system: yes
+
+- name: Create system user without home directory and with specified group
+  user:
+    name: smbuser
+    system: yes
+    group: smbgroup
+    shell: /bin/false
+    createhome: no
+
+- name: Change ownership of directory /share to smbuser:smbgroup
+  file:
+    path: /share
+    owner: smbuser
+    group: smbgroup
+    recurse: yes
+
+- name: firewall port samba
+  tags: samba, centos
+  firewalld:
+    port: "445/tcp"
+    state: "enabled"
+    permanent: true
+    immediate: true
+
+- name: start smb
+  tags: samba, centos
+  service:
+    name: smb
+    enabled: true
+    state: started
