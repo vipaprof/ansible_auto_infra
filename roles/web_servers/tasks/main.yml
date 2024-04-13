@@ -1,0 +1,27 @@
+- name: install nginx
+  tags: debian, nginx
+  apt:
+    name: nginx
+    state: latest
+
+- name: nginx sites-available template
+  tags: nginx
+  template:
+    src: webserver.j2
+    dest: /etc/nginx/sites-available/webserver
+  notify: sites_enabled
+
+- name: copy index.html
+  tags: nginx
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
+
+- name: firewall settings
+  tags: debian, nginx
+  ufw:
+    rule: "allow"
+    port: "8080"
+    proto: "tcp"
+    state: "reloaded"
+  notify: restart_nginx

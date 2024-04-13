@@ -1,0 +1,10 @@
+- name: sites_enabled
+  file:
+    src: /etc/nginx/sites-available/webserver
+    dest: /etc/nginx/sites-enabled/webserver
+    state: link
+
+- name: restart_nginx
+  service:
+    name: nginx
+    state: restarted
