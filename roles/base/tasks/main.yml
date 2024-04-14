@@ -1,4 +1,4 @@
-- name: enable epel and install selinux dep
+- name: Enable epel repository and Install selinux dependency
   tags: centos
   dnf:
     name:
@@ -7,7 +7,7 @@
     state: latest
   when: ansible_distribution == "CentOS"
 
-- name: install packages
+- name: Install packages
   tags: ubuntu, debian, centos
   package:
     name:
@@ -17,12 +17,13 @@
       - fail2ban
     state: latest
 
-- name: selinux ssh port
+# This play should be only run once you can remove it or you can use the selinux module to avoid seeing change everytime
+- name: Selinux ssh port
   tags: centos
   command: semanage port -a -t ssh_port_t -p tcp 2222
   when: ansible_distribution == "CentOS"
 
-- name: firewalld configuration
+- name: Firewalld configuration
   tags: centos
   firewalld:
     port: "2222/tcp"
@@ -31,7 +32,7 @@
     immediate: true
   when: ansible_distribution == "CentOS"
 
-- name: ssh configuration from template
+- name: SSH configuration from template
   tags: ubuntu, debian, centos
   template:
     src: sshd.conf.j2
@@ -41,7 +42,7 @@
     mode: 0644
   notify: restart_sshd
 
-- name: ufw configuration
+- name: UFW configuration
   tags: ubuntu, debian
   ufw:
     rule: "allow"
@@ -49,7 +50,7 @@
     proto: "tcp"
   when: ansible_distribution in ["Debian", "Ubuntu"]
 
-- name: copy jail.local template
+- name: Copy jail.local template
   tags: ubuntu, debian, centos
   template: 
     src: "{{ fail2ban_template_file }}"
@@ -59,7 +60,7 @@
     mode: 0644
   notify: enable_fail2ban
 
-- name: enable ufw
+- name: Enable ufw
   tags: ubuntu, debian
   ufw:
     policy: "deny"

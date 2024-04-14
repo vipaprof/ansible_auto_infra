@@ -4,7 +4,7 @@
   become: true
   pre_tasks:
 
-  - name: install updates
+  - name: Install updates
     tags: always
     dnf:
       name: "*"
@@ -12,7 +12,7 @@
       update_cache: yes
     when: ansible_distribution == "CentOS"
 
-  - name: install updates
+  - name: Install updates
     tags: always
     apt:
       upgrade: dist
@@ -23,19 +23,20 @@
   become: true
   tasks:
 
-  - name: create ansible user
+  - name: Create ansible user
     tags: always
     user:
       name: ansible
       groups: root
 
-  - name: add ssh key to authorized_keys
+  - name: Add ssh key to authorized_keys
     tags: always
     authorized_key:
       user: ansible
       key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM0FQW7U0owybEg56bi+1VnPURI3OB1f5jxYhJ6tt4bc ansible"
 
-  - name: add sudoers file for ansible user
+# This should be done with the visudo command if you are not sure.
+  - name: Add sudoers file for ansible user
     tags: always
     copy:
       src: ansible

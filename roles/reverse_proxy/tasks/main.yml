@@ -1,16 +1,17 @@
-- name: install nginx
+- name: Install nginx
   tags: ubuntu, nginx
   apt:
     name: nginx
     state: latest
 
-- name: copy nginx.conf template
+- name: Copy nginx.conf template
   tags: ubuntu, nginx
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
 
-- name: creating directories for cache
+# I have little knowledge of nginx caching but this a little over the top
+- name: Creating directories for cache
   tags: nginx
   file:
     path: "/tmp/{{ item }}"
@@ -20,7 +21,7 @@
     - /nginx
     - /nginx/cache
 
-- name: firewall settings
+- name: Firewall settings
   tags: ubuntu, nginx
   ufw:
     rule: "allow"

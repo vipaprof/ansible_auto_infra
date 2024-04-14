@@ -1,23 +1,24 @@
-- name: install samba
+- name: Install samba
   tags: samba, centos
   dnf:
     name: samba
     state: latest
 
-- name: stop samba service
+- name: Stop samba service
   tags: samba, centos
   service:
     name: smb
     state: stopped
 
-- name: make backup of configuration file
+# This is not needed technically speaking but a good to have implementation is flawed
+- name: Make backup of configuration file
   tags: samba
   copy:
     src: /etc/samba/smb.conf
     dest: /etc/samba/smb.conf.bak
     remote_src: yes
 
-- name: copy smb.conf template
+- name: Copy smb.conf template
   tags: samba
   template:
     src: smb.conf.j2
@@ -26,7 +27,7 @@
     group: root
     mode: 0755
 
-- name: copy shares.conf template
+- name: Copy shares.conf template
   tags: samba
   template:
     src: shares.conf.j2
@@ -66,7 +67,8 @@
     group: smbgroup
     recurse: yes
 
-- name: firewall port samba
+# There are some more ports like 139 you can always do ss -tuln | grep smb
+- name: Firewall port samba
   tags: samba, centos
   firewalld:
     port: "445/tcp"
@@ -74,7 +76,7 @@
     permanent: true
     immediate: true
 
-- name: start smb
+- name: Start smb
   tags: samba, centos
   service:
     name: smb

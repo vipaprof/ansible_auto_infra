@@ -1,4 +1,5 @@
-- name: install packages
+# This is meant for a workstation where you install all your required packages and setup configuration
+- name: Install packages
   tags: ubuntu, ansible_server
   apt:
     name: 
@@ -8,7 +9,7 @@
       - git
     state: latest
 
-- name: install terraform
+- name: Install terraform
   tags: ansible_server
   unarchive:
     src: https://releases.hashicorp.com/terraform/1.8.0/terraform_1.8.0_linux_amd64.zip
@@ -18,20 +19,20 @@
     mode: 0755
     remote_src: yes
 
-- name: download brave gpg key
+- name: Download brave gpg key
   tags: ansible_server
   get_url:
     url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
     dest: /usr/share/keyrings/brave-browser-archive-keyring.gpg
     mode: 0644
 
-- name: add brave repository to list
+- name: Add brave repository to list
   tags: ubuntu, ansible_server
   apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"
     state: present
 
-- name: update cache and install brave
+- name: Update cache and install brave
   tags: ubuntu, ansible_server
   apt:
     name: brave-browser

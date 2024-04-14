@@ -1,4 +1,4 @@
-- name: install mariadb
+- name: Install mariadb
   tags: mariadb, centos
   dnf:
     name:
@@ -6,26 +6,27 @@
       - python3-mysqlclient
     state: latest
 
-- name: enable mariadb
+- name: Enable mariadb
   tags: mariadb
   service:
     name: mariadb
     state: started
     enabled: yes
 
-- name: copy passwords.yml
+# This is where ansible-vault comes into play 
+- name: Copy passwords.yml
   tags: centos
   template:
     src: passwords.yml.j2
     dest: /home/gloat/passwords.yml
 
-- name: read mariadb root password
+- name: Read mariadb root password
   tags: mariadb
   slurp:
     src: "{{ mariadb_root_password_file }}"
   register: mariadb_root_pass
 
-- name: create mysql database
+- name: Create mysql database
   tags: mariadb
   mysql_db:
     name: production
