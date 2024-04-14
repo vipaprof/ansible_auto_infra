@@ -16,27 +16,27 @@
   roles:
     - base
 
-- hosts: ansible_server
-  become: true
-  roles:
-    - ansible_server
+#- hosts: ansible_server
+#  become: true
+#  roles:
+#    - ansible_server
 
-- hosts: db_server
-  become: true
-  roles:
-    - db_server
+#- hosts: db_server
+#  become: true
+#  roles:
+#    - db_server
 
-- hosts: samba_share
-  become: true
-  roles:
-    - samba_share
+#- hosts: samba_share
+#  become: true
+#  roles:
+#    - samba_share
 
-- hosts: web_servers
-  become: true
-  roles:
-    - web_servers
+#- hosts: web_servers
+#  become: true
+#  roles:
+#    - web_servers
 
-- hosts: reverse_proxy
-  become: true
-  roles: 
-    - reverse_proxy
+#- hosts: reverse_proxy
+#  become: true
+#  roles: 
+#    - reverse_proxy
