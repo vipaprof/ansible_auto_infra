@@ -37,4 +37,4 @@ Learning the basics of Ansible has given me a better understanding of the word I
 
 > Overall This project on Ansible was a great learning experience and I will be sure to write better playbooks in coming Future.
 
-`DYR - Dont Repeat Yourself` If you are going to do it something more than once just automate it, you can use Ansible.
+`DRY - Dont Repeat Yourself` If you are going to do it something more than once just automate it, you can use Ansible.
